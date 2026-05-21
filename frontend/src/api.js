@@ -14,8 +14,8 @@ const api = axios.create({
 
 // ─── Auth ────────────────────────────────────────────────────────────────────
 
-export const attemptLogin = async (password) => {
-  const res = await api.post('/api/login', { password, user_id: 'default' });
+export const attemptLogin = async (password, image_b64 = null) => {
+  const res = await api.post('/api/login', { password, user_id: 'default', image_b64 });
   return res.data;
 };
 

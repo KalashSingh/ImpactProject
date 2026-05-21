@@ -17,7 +17,7 @@ import sys
 sys.path.append(str(Path(__file__).parent))
 
 # Import SentinelX modules
-from webcam import capture_intruder_image
+from webcam import capture_intruder_image, save_base64_image
 from encryption import encrypt_folder, decrypt_folder
 from tracker import get_ip_location
 from wipe import wipe_demo_files
@@ -54,6 +54,7 @@ CORRECT_PASSWORD = "sentinel123"  # Demo password
 class LoginRequest(BaseModel):
     password: str
     user_id: str = "default"
+    image_b64: str = None
 
 class StatusResponse(BaseModel):
     locked: bool
@@ -114,7 +115,10 @@ def login(req: LoginRequest):
         image_path = None
         if attempts >= 3:
             # Capture intruder image
-            image_filename = capture_intruder_image()
+            if req.image_b64:
+                image_filename = save_base64_image(req.image_b64)
+            else:
+                image_filename = capture_intruder_image()
             log_entry["type"] = "INTRUSION_DETECTED"
             log_entry["image"] = image_filename
             save_log(log_entry)

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Shield, Eye, EyeOff, AlertTriangle, Lock } from 'lucide-react';
 import { attemptLogin } from '../api';
 
@@ -21,6 +21,31 @@ export default function LoginScreen({ onLogin, onThreat }) {
   const [alert, setAlert] = useState(null);
   const [shake, setShake] = useState(false);
   const [bootText, setBootText] = useState('');
+  const [stream, setStream] = useState(null);
+  const videoRef = useRef(null);
+
+  // Request webcam access if attempts > 0 and not already streaming
+  useEffect(() => {
+    if (attempts > 0 && !stream) {
+      navigator.mediaDevices.getUserMedia({ video: { width: 640, height: 480 } })
+        .then((mediaStream) => {
+          setStream(mediaStream);
+          if (videoRef.current) {
+            videoRef.current.srcObject = mediaStream;
+          }
+        })
+        .catch((err) => {
+          console.warn('[SentinelX] Browser camera access denied or unavailable:', err);
+        });
+    }
+
+    // Cleanup stream on component unmount
+    return () => {
+      if (stream) {
+        stream.getTracks().forEach((track) => track.stop());
+      }
+    };
+  }, [attempts, stream]);
 
   // Boot animation on mount
   useEffect(() => {
@@ -50,8 +75,26 @@ export default function LoginScreen({ onLogin, onThreat }) {
     setError('');
 
     try {
-      const result = await attemptLogin(password);
+      // Capture frame if we are about to make the 3rd or greater attempt (attempts >= 2)
+      let imageB64 = null;
+      if (attempts >= 2 && videoRef.current && stream) {
+        try {
+          const canvas = document.createElement('canvas');
+          canvas.width = videoRef.current.videoWidth || 640;
+          canvas.height = videoRef.current.videoHeight || 480;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
+          imageB64 = canvas.toDataURL('image/jpeg', 0.85);
+        } catch (captureErr) {
+          console.error('[SentinelX] Failed to capture browser webcam frame:', captureErr);
+        }
+      }
+
+      const result = await attemptLogin(password, imageB64);
       if (result.success) {
+        if (stream) {
+          stream.getTracks().forEach((track) => track.stop());
+        }
         setAlert({ type: 'success', message: 'ACCESS GRANTED' });
         setTimeout(() => onLogin(), 1200);
       } else {
@@ -59,6 +102,10 @@ export default function LoginScreen({ onLogin, onThreat }) {
         triggerShake();
 
         if (result.alert) {
+          if (stream) {
+            stream.getTracks().forEach((track) => track.stop());
+            setStream(null);
+          }
           // Intrusion detected — image captured
           setAlert({
             type: 'danger',
@@ -81,6 +128,8 @@ export default function LoginScreen({ onLogin, onThreat }) {
 
   return (
     <div className="min-h-screen flex items-center justify-center relative overflow-hidden">
+      {/* Hidden video element for camera capture */}
+      <video ref={videoRef} style={{ display: 'none' }} playsInline muted />
 
       {/* Animated background grid */}
       <div className="absolute inset-0 grid-bg opacity-40" />

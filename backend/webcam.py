@@ -50,6 +50,32 @@ def capture_intruder_image() -> str:
         return _save_placeholder(filename, filepath)
 
 
+def save_base64_image(image_b64: str) -> str:
+    """
+    Saves a base64 encoded image string from the frontend as a file.
+    Returns the filename of the saved image.
+    """
+    import base64
+    timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+    filename = f"intruder_{timestamp}.jpg"
+    filepath = INTRUDER_DIR / filename
+
+    try:
+        # Split header if present (e.g. "data:image/jpeg;base64,...")
+        if "," in image_b64:
+            image_b64 = image_b64.split(",")[1]
+        
+        img_data = base64.b64decode(image_b64)
+        with open(filepath, "wb") as f:
+            f.write(img_data)
+        
+        print(f"[SentinelX] Uploaded intruder image saved: {filename}")
+        return filename
+    except Exception as e:
+        print(f"[SentinelX] Failed to save uploaded image: {e}")
+        return _save_placeholder(filename, filepath)
+
+
 def _save_placeholder(filename: str, filepath: Path) -> str:
     """
     Creates a placeholder image when webcam is unavailable.
