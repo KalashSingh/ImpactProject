@@ -417,18 +417,19 @@ This prototype is designed to **demonstrate concepts** for a B.Tech final year p
 
 **SentinelX Team — Final Year B.Tech CSE**
 
-| Name | Role |
-|---|---|
-| [Your Name] | Full Stack Developer, System Architecture |
-| [Teammate 2] | Backend Developer, Encryption Module |
-| [Teammate 3] | Frontend Developer, UI/UX Design |
+|       Name       |
+|------------------|
+|  [KALASH - LEAD] | 
+|   [ABHISHEK]     |
+|     [MUSKAN]     | 
+|     [AYUSHI]     | 
+|     [MINAL]      | 
+|------------------|
 
----
-
-**Institution:** [Your College Name]  
+**Institution:** [PIT & PIET]  
 **Department:** Computer Science & Engineering  
-**Academic Year:** 2023–24  
-**Project Guide:** [Professor Name]
+**Academic Year:** 2026  
+
 
 ---
 
