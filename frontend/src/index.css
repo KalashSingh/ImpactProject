@@ -1,0 +1,171 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── SentinelX Global Styles ─────────────────────────────────────── */
+
+:root {
+  --bg: #050a14;
+  --panel: #080f1f;
+  --card: #0a1628;
+  --border: #0d2040;
+  --blue: #00d4ff;
+  --blue-dim: #0066aa;
+  --red: #ff2d55;
+  --green: #00ff88;
+  --yellow: #ffcc00;
+  --text: #c8d8f0;
+  --text-dim: #5a7a9a;
+}
+
+/* Scanline overlay effect */
+.scanlines::after {
+  content: '';
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.03) 2px,
+    rgba(0, 0, 0, 0.03) 4px
+  );
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* Neon text glow */
+.text-neon-blue {
+  color: var(--blue);
+  text-shadow: 0 0 10px var(--blue), 0 0 20px var(--blue);
+}
+.text-neon-red {
+  color: var(--red);
+  text-shadow: 0 0 10px var(--red), 0 0 20px var(--red);
+}
+.text-neon-green {
+  color: var(--green);
+  text-shadow: 0 0 10px var(--green);
+}
+
+/* Glowing borders */
+.border-neon-blue {
+  border-color: var(--blue);
+  box-shadow: 0 0 8px var(--blue), inset 0 0 8px rgba(0, 212, 255, 0.05);
+}
+.border-neon-red {
+  border-color: var(--red);
+  box-shadow: 0 0 8px var(--red), inset 0 0 8px rgba(255, 45, 85, 0.05);
+}
+
+/* Card panel styles */
+.sentinel-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.6), inset 0 1px 0 rgba(0,212,255,0.08);
+  position: relative;
+  overflow: hidden;
+}
+
+.sentinel-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--blue), transparent);
+  opacity: 0.5;
+}
+
+/* Grid background pattern */
+.grid-bg {
+  background-image: 
+    linear-gradient(rgba(0, 212, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 212, 255, 0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+/* Button styles */
+.btn-neon-blue {
+  background: rgba(0, 212, 255, 0.1);
+  border: 1px solid var(--blue);
+  color: var(--blue);
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-neon-blue:hover {
+  background: rgba(0, 212, 255, 0.2);
+  box-shadow: 0 0 15px rgba(0, 212, 255, 0.4), inset 0 0 15px rgba(0, 212, 255, 0.1);
+}
+
+.btn-neon-red {
+  background: rgba(255, 45, 85, 0.1);
+  border: 1px solid var(--red);
+  color: var(--red);
+  transition: all 0.2s ease;
+}
+
+.btn-neon-red:hover {
+  background: rgba(255, 45, 85, 0.2);
+  box-shadow: 0 0 15px rgba(255, 45, 85, 0.4), inset 0 0 15px rgba(255, 45, 85, 0.1);
+}
+
+.btn-neon-green {
+  background: rgba(0, 255, 136, 0.1);
+  border: 1px solid var(--green);
+  color: var(--green);
+  transition: all 0.2s ease;
+}
+
+.btn-neon-green:hover {
+  background: rgba(0, 255, 136, 0.2);
+  box-shadow: 0 0 15px rgba(0, 255, 136, 0.4);
+}
+
+/* Threat indicator pulse */
+@keyframes threat-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.95); }
+}
+
+.threat-high {
+  animation: threat-pulse 1s ease-in-out infinite;
+}
+
+/* Terminal text animation */
+@keyframes typewriter {
+  from { width: 0; }
+  to { width: 100%; }
+}
+
+/* Status indicator blink */
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.blink { animation: blink 1s step-end infinite; }
+
+/* Hexagon clip */
+.hex-clip {
+  clip-path: polygon(50% 0%, 95% 25%, 95% 75%, 50% 100%, 5% 75%, 5% 25%);
+}
+
+/* Progress bar animation */
+@keyframes progress-scan {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.scanning-bar {
+  background: linear-gradient(90deg, transparent, var(--blue), transparent);
+  background-size: 200% 100%;
+  animation: progress-scan 1.5s linear infinite;
+}
+
+/* Lock screen overlay */
+.lock-overlay {
+  backdrop-filter: blur(8px);
+  background: rgba(5, 10, 20, 0.95);
+}

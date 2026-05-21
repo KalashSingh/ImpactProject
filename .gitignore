@@ -1,0 +1,48 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+venv/
+.venv/
+env/
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+
+# Encryption key (security — do not commit)
+backend/sentinel.key
+
+# Logs (auto-generated)
+backend/logs/intrusion_log.json
+
+# Intruder images (privacy)
+intruder_images/*.jpg
+intruder_images/*.jpeg
+intruder_images/*.png
+
+# Node / Electron
+node_modules/
+frontend/node_modules/
+frontend/build/
+dist/
+.npm/
+
+# Environment
+.env
+.env.local
+.env.production
+
+# OS
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# IDE
+.vscode/
+.idea/
+*.sublime-project
+
+# Electron builder cache
+.cache/

@@ -1,0 +1,44 @@
+{
+  "name": "sentinelx",
+  "version": "1.0.0",
+  "description": "SentinelX — Smart Anti-Theft Device Security System",
+  "main": "electron/main.js",
+  "homepage": "./",
+  "scripts": {
+    "electron": "electron .",
+    "electron-dev": "concurrently \"cd frontend && npm start\" \"wait-on http://localhost:3000 && electron .\"",
+    "build-frontend": "cd frontend && npm run build",
+    "dist": "npm run build-frontend && electron-builder",
+    "start-backend": "cd backend && uvicorn main:app --host 0.0.0.0 --port 8000 --reload",
+    "start": "npm run start-backend"
+  },
+  "devDependencies": {
+    "electron": "^30.0.1",
+    "electron-builder": "^24.13.3",
+    "concurrently": "^8.2.2",
+    "wait-on": "^7.2.0"
+  },
+  "build": {
+    "appId": "com.sentinelx.security",
+    "productName": "SentinelX",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "electron/**/*",
+      "frontend/build/**/*",
+      "!node_modules/**/*"
+    ],
+    "win": {
+      "target": "nsis",
+      "icon": "electron/icon.ico"
+    },
+    "mac": {
+      "target": "dmg",
+      "icon": "electron/icon.icns"
+    },
+    "linux": {
+      "target": "AppImage"
+    }
+  }
+}
