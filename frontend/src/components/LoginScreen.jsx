@@ -2,6 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { Shield, Eye, EyeOff, AlertTriangle, Lock } from 'lucide-react';
 import { attemptLogin } from '../api';
 
+const bootLines = [
+  '> SENTINELX SECURITY SYSTEM v1.0.0',
+  '> Initializing security protocols...',
+  '> Loading threat detection modules...',
+  '> Webcam module: READY',
+  '> Encryption engine: STANDBY',
+  '> Authentication layer: ACTIVE',
+  '> System ready. Authenticate to proceed.',
+];
+
 export default function LoginScreen({ onLogin, onThreat }) {
   const [password, setPassword] = useState('');
   const [showPw, setShowPw] = useState(false);
@@ -11,16 +21,6 @@ export default function LoginScreen({ onLogin, onThreat }) {
   const [alert, setAlert] = useState(null);
   const [shake, setShake] = useState(false);
   const [bootText, setBootText] = useState('');
-
-  const bootLines = [
-    '> SENTINELX SECURITY SYSTEM v1.0.0',
-    '> Initializing security protocols...',
-    '> Loading threat detection modules...',
-    '> Webcam module: READY',
-    '> Encryption engine: STANDBY',
-    '> Authentication layer: ACTIVE',
-    '> System ready. Authenticate to proceed.',
-  ];
 
   // Boot animation on mount
   useEffect(() => {

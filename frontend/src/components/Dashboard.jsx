@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import {
   Shield, AlertTriangle, Lock, RefreshCw, Cpu,
   MapPin, Activity, Image, FileText, Trash2,
-  ShieldOff, Key, LogOut, Database, Wifi
+  ShieldOff, Key, Database, Wifi
 } from 'lucide-react';
 import {
   getStatus, getLocation, getLogs, getImages,
@@ -168,7 +168,6 @@ export default function Dashboard({ onLock, threatAlert, setThreatAlert }) {
   // ─── Helpers ────────────────────────────────────────────────────────────────
 
   const threatLevel = status?.threat_level || 'LOW';
-  const threatColor = threatLevel === 'HIGH' ? 'red' : 'green';
 
   const logTypeColor = (type) => {
     const map = {
