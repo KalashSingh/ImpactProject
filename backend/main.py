@@ -11,6 +11,10 @@ import json
 import os
 import datetime
 from pathlib import Path
+import sys
+
+# Add backend directory to sys.path so local imports work when run from root
+sys.path.append(str(Path(__file__).parent))
 
 # Import SentinelX modules
 from webcam import capture_intruder_image
