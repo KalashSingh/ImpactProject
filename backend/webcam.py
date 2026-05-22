@@ -1,11 +1,9 @@
-"""
-SentinelX - Webcam Capture Module
-Captures intruder images using OpenCV when unauthorized access is detected.
-"""
+import os
+# Suppress OpenCV warning logs
+os.environ["OPENCV_LOG_LEVEL"] = "ERROR"
 
 import cv2
 import datetime
-import os
 from pathlib import Path
 
 # Directory to save intruder images
@@ -21,6 +19,12 @@ def capture_intruder_image() -> str:
     timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
     filename = f"intruder_{timestamp}.jpg"
     filepath = INTRUDER_DIR / filename
+
+    # On cloud platforms like Render, there is no physical webcam device.
+    # Skip attempting to open a camera to avoid hardware warning logs.
+    if os.environ.get("RENDER") == "true":
+        print("[SentinelX] Render environment detected. Skipping camera capture and using placeholder.")
+        return _save_placeholder(filename, filepath)
 
     try:
         # Open the default webcam (index 0)

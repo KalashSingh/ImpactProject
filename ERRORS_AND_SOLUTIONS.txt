@@ -1,0 +1,96 @@
+========================================================================
+                       SENTINELX - ERRORS & SOLUTIONS
+========================================================================
+
+This file documents known issues, errors, and their corresponding solutions
+for the SentinelX Anti-Theft Security System project. Use this file as a
+reference for troubleshooting during development and deployment.
+
+------------------------------------------------------------------------
+1. ERROR: OpenCV V4L2/FFMPEG Camera Warnings in Cloud Console
+------------------------------------------------------------------------
+* ERROR LOGS:
+  - [WARN] global cap_v4l.cpp:914 open VIDEOIO(V4L2:/dev/video0): can't open camera by index
+  - [WARN] global cap_ffmpeg_impl.hpp:1223 open VIDEOIO(FFMPEG): OpenCV should be configured with libavdevice...
+
+* CAUSE:
+  The backend tries to access the physical webcam device at index 0 (using
+  `cv2.VideoCapture(0)`) on a server hosted in the cloud (such as Render).
+  Because cloud servers are running on virtualized machines in a data center,
+  no physical webcam is attached, causing OpenCV to output warnings to stderr.
+
+* SOLUTION:
+  - Detect the cloud environment (e.g., checking if the environment variable 
+    `RENDER` is set to "true") and bypass the local webcam capture.
+  - Automatically fallback to generating a placeholder image on the server.
+  - Suppress internal OpenCV logs by setting `os.environ["OPENCV_LOG_LEVEL"] = "ERROR"` 
+    before importing the `cv2` module.
+  - Ensure the frontend captures the video frame from the client's browser or
+    device camera and sends it as a Base64 encoded string (`image_b64`) in the
+    login request payload.
+
+------------------------------------------------------------------------
+2. PROBLEM: Saved Intrusion Logs and Images Disappear on Render
+------------------------------------------------------------------------
+* BEHAVIOR:
+  Whenever the Render free instance spins down due to inactivity or restarts
+  after a new deployment, previously saved intrusion logs and intruder images
+  are completely lost.
+
+* CAUSE:
+  Standard Render web services utilize an ephemeral filesystem. Any files
+  created or modified at runtime (such as `intrusion_log.json` and images inside 
+  `intruder_images/`) are stored locally on that container instance and are 
+  wiped out when the instance is restarted or spun down.
+
+* SOLUTION:
+  - For Development/Testing: Run the application locally on your machine where
+    the local filesystem is persistent.
+  - For Production: 
+    a. Integrate a persistent database (e.g. Firebase, MongoDB, or PostgreSQL)
+       to store intrusion logs.
+    b. Integrate a cloud storage service (e.g. AWS S3 or Cloudinary) to host 
+       and serve captured intruder images.
+
+------------------------------------------------------------------------
+3. ERROR: "Backend offline — start the Python server" on Frontend
+------------------------------------------------------------------------
+* BEHAVIOR:
+  The login screen shows the error: "Backend offline — start the Python server."
+
+* CAUSE:
+  - The Python server is either not running or running on a different port.
+  - The API endpoint URL configured in the frontend (`src/api.js`) is incorrect.
+  - Cross-Origin Resource Sharing (CORS) block.
+
+* SOLUTION:
+  - Ensure the Python server is running using:
+    `./venv/bin/uvicorn main:app --reload` inside the `backend` folder.
+  - Check the API URL mapping in the frontend and make sure CORS middleware
+    is configured in `backend/main.py` to allow the frontend's origin:
+    ```python
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["*"], # Adjust to your exact frontend domain in production
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
+    ```
+
+------------------------------------------------------------------------
+4. ERROR: "Browser camera access denied or unavailable" in Browser Console
+------------------------------------------------------------------------
+* BEHAVIOR:
+  The browser console prints warning that it cannot access the camera.
+
+* CAUSE:
+  Modern web browsers restrict media capture APIs (like `getUserMedia`) to
+  Secure Contexts (HTTPS or localhost). If the frontend is loaded over HTTP
+  on a remote IP or domain, the camera access will be blocked.
+
+* SOLUTION:
+  - Ensure the frontend web application is hosted and accessed via HTTPS
+    (e.g., `https://your-app-name.onrender.com` or `https://localhost:3000`).
+  - Grant browser permission when requested.
+========================================================================
