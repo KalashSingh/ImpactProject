@@ -7,6 +7,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
+from typing import Optional
 import json
 import os
 import datetime
@@ -54,7 +55,7 @@ CORRECT_PASSWORD = "sentinel123"  # Demo password
 class LoginRequest(BaseModel):
     password: str
     user_id: str = "default"
-    image_b64: str = None
+    image_b64: Optional[str] = None
 
 class StatusResponse(BaseModel):
     locked: bool
